@@ -53,6 +53,11 @@
   cursor: pointer;
 }
 
+.search-bar__pending {
+  color: #888;
+  font-size: 14px;
+}
+
 .search-bar__count {
   margin-left: auto;
   color: #666;

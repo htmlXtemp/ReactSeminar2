@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { products } from './data';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
@@ -14,14 +21,17 @@ function App() {
     inputRef.current.focus();
   }, []);
 
+  const deferredQuery = useDeferredValue(query);
+  const isPending = query !== deferredQuery;
+
   const visible = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = deferredQuery.trim().toLowerCase();
     return products.filter(
       (p) => p.title.toLowerCase().includes(q) && (!onlyInStock || p.inStock)
     );
-  }, [query, onlyInStock]);
+  }, [deferredQuery, onlyInStock]);
 
-  function addToCart(product) {
+  const addToCart = useCallback((product) => {
     setCart((cart) => {
       const existing = cart.items.find((item) => item.id === product.id);
       if (existing) {
@@ -38,17 +48,17 @@ function App() {
         ],
       };
     });
-  }
+  }, []);
 
-  function removeFromCart(id) {
+  const removeFromCart = useCallback((id) => {
     setCart((cart) => ({
       items: cart.items.filter((item) => item.id !== id),
     }));
-  }
+  }, []);
 
-  function clearCart() {
+  const clearCart = useCallback(() => {
     setCart({ items: [] });
-  }
+  }, []);
 
   const totalCount = useMemo(
     () => cart.items.reduce((sum, item) => sum + item.qty, 0),
@@ -75,6 +85,7 @@ function App() {
         setOnlyInStock={setOnlyInStock}
         inputRef={inputRef}
         foundCount={visible.length}
+        isPending={isPending}
       />
       <ProductList
         products={visible}

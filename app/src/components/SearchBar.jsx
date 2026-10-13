@@ -5,6 +5,7 @@ export default function SearchBar({
   setOnlyInStock,
   inputRef,
   foundCount,
+  isPending,
 }) {
   return (
     <div className="search-bar">
@@ -24,8 +25,9 @@ export default function SearchBar({
         />
         Только в наличии
       </label>
+      {isPending && <span className="search-bar__pending">Обновляем список...</span>}
       <span className="search-bar__count">
-        Найдено: {foundCount}
+        Найдено: {foundCount.toLocaleString('ru-RU')}
       </span>
     </div>
   );
