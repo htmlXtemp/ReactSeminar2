@@ -1,4 +1,8 @@
-export default function ProductCard({ product, qty, onAdd, onRemove }) {
+import { memo } from 'react';
+
+const ProductCard = memo(function ProductCard({ product, qty, onAdd, onRemove }) {
+  console.log('render', product.id);
+
   const stockClass = product.inStock
     ? 'product-card__stock product-card__stock--in'
     : 'product-card__stock product-card__stock--out';
@@ -34,4 +38,6 @@ export default function ProductCard({ product, qty, onAdd, onRemove }) {
       )}
     </div>
   );
-}
+});
+
+export default ProductCard;
