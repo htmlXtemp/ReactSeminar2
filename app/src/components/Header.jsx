@@ -1,4 +1,8 @@
-export default function Header({ totalCount, totalPrice, onClear }) {
+import { useCartContext } from '../hooks/useCart';
+
+export default function Header() {
+  const { totalCount, totalPrice, clear } = useCartContext();
+
   return (
     <header className="header">
       <h1 className="header__title">Магазин</h1>
@@ -6,7 +10,7 @@ export default function Header({ totalCount, totalPrice, onClear }) {
         <span className="header__summary">
           Корзина: {totalCount} шт. · {totalPrice} ₽
         </span>
-        <button className="header__clear" onClick={onClear}>
+        <button className="header__clear" onClick={clear}>
           Очистить
         </button>
       </div>

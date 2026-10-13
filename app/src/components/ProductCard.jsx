@@ -21,20 +21,23 @@ const ProductCard = memo(function ProductCard({ product, qty, onAdd, onRemove })
         <button className="product-card__button" disabled>
           В корзину
         </button>
-      ) : qty > 0 ? (
-        <div className="product-card__row">
-          <span className="product-card__qty">В корзине: {qty}</span>
-          <button
-            className="product-card__button product-card__button--ghost"
-            onClick={() => onRemove(product.id)}
-          >
-            Убрать
+      ) : (
+        <div className="product-card__actions">
+          {qty > 0 && (
+            <div className="product-card__row">
+              <span className="product-card__qty">В корзине: {qty}</span>
+              <button
+                className="product-card__button product-card__button--ghost"
+                onClick={() => onRemove(product.id)}
+              >
+                Убрать
+              </button>
+            </div>
+          )}
+          <button className="product-card__button" onClick={() => onAdd(product)}>
+            В корзину
           </button>
         </div>
-      ) : (
-        <button className="product-card__button" onClick={() => onAdd(product)}>
-          В корзину
-        </button>
       )}
     </div>
   );

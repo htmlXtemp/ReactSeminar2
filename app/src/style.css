@@ -141,3 +141,15 @@ body {
   font-size: 14px;
   font-weight: bold;
 }
+
+.product-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Индикатор отложенного обновления списка */
+.search-bar__pending {
+  color: #888;
+  font-size: 14px;
+}

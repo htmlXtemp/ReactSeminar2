@@ -1,6 +1,9 @@
+import { useCartContext } from '../hooks/useCart';
 import ProductCard from './ProductCard';
 
-export default function ProductList({ products, qtyById, onAdd, onRemove }) {
+export default function ProductList({ products }) {
+  const { qtyById, add, remove } = useCartContext();
+
   return (
     <div className="product-list">
       {products.map((product) => (
@@ -8,8 +11,8 @@ export default function ProductList({ products, qtyById, onAdd, onRemove }) {
           key={product.id}
           product={product}
           qty={qtyById[product.id] || 0}
-          onAdd={onAdd}
-          onRemove={onRemove}
+          onAdd={add}
+          onRemove={remove}
         />
       ))}
     </div>
