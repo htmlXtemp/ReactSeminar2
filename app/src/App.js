@@ -1,13 +1,39 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import './style.css';
 import { products } from './data';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import ProductList from './components/ProductList';
 
+const initialCart = { items: [] };
+
+function cartReducer(state, action) {
+  switch (action.type) {
+    case 'add': {
+      const existing = state.items.find((item) => item.id === action.product.id);
+      if (existing) {
+        return {
+          ...state,
+          items: state.items.map((item) =>
+            item.id === action.product.id ? { ...item, qty: item.qty + 1 } : item
+          ),
+        };
+      }
+      return { ...state, items: [...state.items, { ...action.product, qty: 1 }] };
+    }
+    case 'remove':
+      return { ...state, items: state.items.filter((item) => item.id !== action.id) };
+    case 'clear':
+      return initialCart;
+    default:
+      return state;
+  }
+}
+
 function App() {
   const [query, setQuery] = useState('');
   const [onlyInStock, setOnlyInStock] = useState(false);
+  const [cart, dispatch] = useReducer(cartReducer, initialCart);
 
   const inputRef = useRef(null);
   useEffect(() => {
@@ -21,9 +47,21 @@ function App() {
     );
   }, [query, onlyInStock]);
 
+  const qtyById = {};
+  for (const item of cart.items) {
+    qtyById[item.id] = item.qty;
+  }
+
+  const totalCount = cart.items.reduce((sum, item) => sum + item.qty, 0);
+  const totalPrice = cart.items.reduce((sum, item) => sum + item.qty * item.price, 0);
+
   return (
     <div>
-      <Header />
+      <Header
+        totalCount={totalCount}
+        totalPrice={totalPrice}
+        onClear={() => dispatch({ type: 'clear' })}
+      />
       <SearchBar
         query={query}
         onSearch={setQuery}
@@ -32,7 +70,12 @@ function App() {
         inputRef={inputRef}
         foundCount={visible.length}
       />
-      <ProductList products={visible} />
+      <ProductList
+        products={visible}
+        qtyById={qtyById}
+        onAdd={(product) => dispatch({ type: 'add', product })}
+        onRemove={(id) => dispatch({ type: 'remove', id })}
+      />
     </div>
   );
 }
